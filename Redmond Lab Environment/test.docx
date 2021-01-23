@@ -1,0 +1,782 @@
+	
+
+
+Lab Management Document
+
+LogicFinder - Guide
+Document Version: 10/2/2018
+
+
+
+
+Managing VMWare Environment
+
+
+
+DraftVersion 1.1
+Baseline version 0.0
+October 10th, 2019
+
+
+Author			
+Contributors			NAM	
+	10/2/2018	Larry	
+		Wajid Hassan	wajid@logicfinder.net
+		Frank Argueta	
+		Tariq	
+			
+			
+
+ 
+Document Control Section
+
+Document History
+
+The following table contains the revision history of this document.
+
+Table 1:  Revision History
+Version Number	Owner	Section #	Description	Issue Date	Version Notes
+( Changes made)
+0.0	Wajid	All sections	Draft Version	8/15/2018	Initial Idea conceived and documented
+0.0	Wajid	All sections	Draft Version	9/23/2018	Austin Server Access and Baltimore Server Access Discussed
+
+1.0	Nam	All sections	Draft Version	2/14/2019	Creating Ubuntu Machine ON Austin Server
+
+2.0	Wajid	All sections	Draft Version	2/15/2019	Fixed Navigation errors
+3.0	Nam	All sections	Draft Version	2/15/2019	-	Reorganized the document
+3.1	Frank	6.6-6.7	Draft Version	4/11/2019	Edited and added info
+3.2	Frank	All sections	Draft Version	5/24/2019	Added sections 7-7.2 creating Windows VM and updated and reorganized other sections.
+3.3	Jeff	14	Draft Version	9/14/2019	Added to vnc section
+					
+					
+
+ 
+
+
+
+
+
+
+
+
+
+Copyright © LogicFinder Consulting Development and Training Inc.
+www.logicfinder.net
+
+LogicFinder Labs,
+LogicFinder Labs, are registered trademarks of LogicFinder Consulting Development and Training Inc.
+
+
+
+
+
+This guide is created by Larry Vongkhamchanh intended to set up vsphere access to the Baltimore ESXi server using Vsphere client. This guide will show you how to get access from a Windows 10 machine.
+
+ 
+1.	Overall Architecture
+
+ 
+
+
+
+ 
+2.	Server information:
+
+Server	Function	ILO/ IPMI IP	ESXI / Server IP	Login Credentials	Notes
+Austin 	vSphere Server/vCenter		172.16.0.x		
+Baltimore	ESXI Server		172.16.0.x	administrator@vsphere.local
+				Inabia786!
+	
+Omaha	ESXI Server		172.16.0.x	root
+			Inabia786!
+		
+	
+					
+					
+
+
+
+
+
+Baltimore Server ILO 172.16.0.111
+Baltimore Server ESXI 172.16.0.112
+Username: root
+Password: ------
+
+ 
+3.	Server Software and Hardware Configurations:
+3.1.	Austin
+
+Windows Sever 2012, 
+Works as vCenter Server and additional responsibility of FTP Server. vCenter is used to centralize and manage Baltimore and Omaha server.
+		
+
+3.2.	Baltimore
+
+Runs on ESXI 6.0 and vSphere 6.0 and hosts Linux and Windows Student and Test VMs
+Web vSphere Credentials:
+		
+				
+
+3.3.	Omaha
+
+Runs on ESXI 6.0 and vSphere 6.0 and hosts Linux and Windows Student and Test VMs
+
+			
+
+ 
+4.	Downloading vSphere client.
+
+Go to the following link: https://kb.vmware.com/s/article/2089791
+
+After download is complete run the exe file.
+
+ 
+
+Follow the steps and leave everything else default. 
+
+
+Next, you look for the application vSphere client icon on your desktop or saved directory. 
+ 			 
+
+
+
+5.	How to access the Baltimore and Omaha Servers?
+5.1.	Using vCenter:
+For centralization purposes, we access Baltimore/Omaha servers via VCenter installed on Austin Server. So, Austin credentials will be used.
+
+Using a web browser go to https://172.16.0.110/vsphere-client/?csp and enter the credentials. If getting blocked use 172.16.0.110. 
+
+ 
+
+Once you’re logged in, you will see the home screen. Click on Hosts and Clusters to see both Baltimore and Omaha servers respective IP addresses listed as datacenters.
+ 
+Baltimore and Omaha servers.
+ 
+
+5.2.	Single server management: using vSphere client.
+Unlike vCenter, this method is limited to managing one server at a time.
+
+For Baltimore server: open up vSphere client and enter the following:
+172.16.0.112
+root 
+sERVERMONKEY
+
+ 
+Baltimore virtual environment:
+ 
+
+For Omaha Server: open up vSphere client and enter the following:
+172.16.0.40
+root 
+Inabia786!
+
+ 
+Omaha virtual environment:
+ 
+
+Note: if you get a message requesting upgrade, go ahead and complete it.
+ 
+
+6.	Creating Ubuntu VM
+The following steps will show you how to create a ubuntu machine using web vSphere/vCenter.
+6.1.	Access vSphere server on Austin to manage Baltimore Server
+ 
+
+
+ 
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+6.2.	Review:
+
+ 
+Edit settings
+ 
+Looking for Ubuntu 18.04 ISO
+\ 
+ 
+Make hard disk to be 10 GB
+ 
+6.3.	Ubuntu Installation
+Follow on-screen installation steps to complete Ubuntu installation
+ 
+
+
+
+
+
+
+
+
+Select language:
+ 
+
+Select Normal installation:
+
+ 
+
+
+
+
+
+
+
+
+
+Select ‘Something else’:
+ 
+
+Create partition for swap. Swap is the partition for keeping unneeded memory pages, like Windows swap. Also, it can be used for hibernation.
+
+ 
+
+ 
+
+ 
+
+Create partition for / (root fs). This is the filesystem that contains your kernel, boot files, system files, command-line utilities, libraries, system-wide configuration files and logs.
+ 
+Create partition for /home. This is the filesystem for your user's files: documents, images, music and videos. It's much more like Users folder in Windows.
+Recommend use ext4.
+ 
+
+ 
+
+ 
+
+ 
+
+6.4.	Setting up the network
+ 
+
+
+Enter the network IPV4 details and click ‘Apply’
+Please Note: SET Gate-way IP 172.16.0.2
+ 
+6.5.	Restarting network connection without rebooting
+Use the following commands to restart the network adapter:
+ 
+6.6.	Connecting to Linux using Windows RDP
+1.	Switch to root mode sudo -s
+2.	Run apt get update
+3.	Install xrdp using the command: apt-get install xrdp –y
+4.	Install xfce4: apt-get install xfce4 –y
+5.	Run the following command to make sure xRDP uses xfce4 in session file:
+ echo xfce4-session >~/.xsession
+6.	Run the following command to add xfce4 to the startwm file:
+nano /etc/xrdp/startwm.sh
+7.	Add startxfce4 as shown in the image:
+
+ 
+
+8.	Hit Ctrl+x and type y to save changes in the file.
+9.	Use the command below to make all these changes effective: service xrdp restart
+
+You can now connect using Windows Remote Desktop (RDP). Enter the VM IP address and its respective credentials.
+
+6.7.	Installing VNC on Ubuntu for remote desktop access
+In order to have remote desktop connection to our Ubuntu machines we need VNCserver on the VM. The steps below will install and configure VNC to allow remote desktop connection to our Ubuntu machines using GNOME desktop environment. Commands are shown in bold.
+1. Switch to root mode using the command sudo -s 
+2. Install VNC server: apt install vnc4server xfce4 xfce4-goodies
+3. set a password for VNC using vncpasswd (max number of characters is 8). Try to use password or Logicfin
+ 
+4. Start VNC with the command vncserver to create the xstartup script.
+5. Open the xstartup file using nano editor: nano  ~/.vnc/xstartup
+6. Add the following to the xstartup file:
+ 
+
+7. Hit Ctrl + x and type y to save the changes.
+8. Install Gnome and utilities using the following command:
+apt install gnome-settings-daemon metacity nautilus gnome-terminal
+9. Kill the process (desktop) that you created when started VNC for the first time. Alternatively you can run the commands vncserver :x to kill all VNC server processes.
+ 
+10. Restart VNC server:  vncserver
+You should see something like this: 
+
+When you try to connect using VNC client on your remote computer, user1-vm2 can be replaced with the VM IP followed by :1 which is the desktop number in this case. This vm socket IP would be: 172.16.0.81:1
+6.8.	Using VNC Viewer to remotely connect to Ubuntu VMS
+
+If you don’t have VNC viewer installed on your computer, you can downloaded from here https://www.realvnc.com/en/connect/download/viewer/windows/.
+
+Open up VNC viewer client on your computer and type in the socket IP and hit Enter. In this case is :1. If were to run vncserver again without killing process 1 we will have a second desktop :2. 
+ 
+Check the box shown and click continue at the prompt
+ 
+Enter the password you set up earlier, which should be Logicfin or password unless you set up a different one. Hit Enter or click OK.
+ 
+
+If successful, you should see GNOME desktop environment as shown below:
+
+ 
+2-Right click on the white background screen and click terminal as shown in below snap.
+
+ 
+
+
+3- type command in the terminal
+ 
+4- for example I want to check IP, I use ifconfig and press enter
+ 
+
+
+
+
+
+5-You can test the ping 8.8.8.8 for internet connectivity
+ 
+You can cancel the terminal from red cross button 
+It is user friendly you can easily open any folder.
+
+6.9.	Installing OpenSSH server on Ubuntu for remote SSH access.
+1. Update Ubuntu:
+ 
+
+2. Install Open SSH server:
+ 
+
+3. Verify SSH is running:
+ 
+4. If SSH server is not running, then use the command:
+ 
+6.10.	Connecting to Ubuntu VM using SSH client
+We use Putty as SSH client, but you can use any other terminal emulation tool of your choice.
+
+1. To connect, on Putty main screen type in the VM IP and make sure SSH is selected then click Open. 
+ 
+
+2. Select yes at the prompt asking for SSH rsa keys
+3. Hit enter if you don’t get a ‘Login as’ message
+Credentials: 	user1
+Logicfinder321
+	
+ 
+
+Successful connection to Ubuntu VM CLI should look like this:
+ 
+6.11.	 VNC Possible Issues and Solutions
+1. If you run this into a gray screen like the one below, make sure the spelling in the xstartup file is correct and lines are complete.
+
+ 
+
+ 
+
+Verify that the commands were properly issued, and packages were correctly installed. Kill any existing VNC connection and restart VNC with the command vncserver
+
+ 
+2. Every time a machine is shut down or restarted, we need to manually start VNC server using the command vncserver to be able to remotely connect to it.
+ 
+3. If you accidentally or intentionally close the GNOME desktop window on VNC viewer, you will end up with a gray screen. Close VNC viewer and ask IT admins to re-enable it for you.
+7.	Creating a Windows VM
+Using vSphere Web client, right click on the datacenter you want to create the new VM and double-click ‘New Virtual Machine’.
+172.16.0.110		administrator@vsphere.local		Inabia786!
+
+ 
+Follow the steps shown in the screen captures below. Note that some of these configurations might change according to your own preferences.
+ 
+Select a name and a folder (if any) for the new VM. 
+ 
+
+Select the compute resource which should be the datacenter.
+ 
+Select the storage location; this should be the a datastore in the datacenter. If multiple datastores are available please ask admin which one you should use.
+ 
+
+Make sure ‘compatible with ESXi 6.0 and later’ is selected.
+ 
+
+Select the right OS, in this case it’s Windows. Select the right OS version/architecture, in this case it’s Windows 10 (64-bit).
+ 
+It’s important that you known the OS minimum requirements when customizing the hardware for the new VM. Assigning anything below the minimum requirements will results in future issues. For Windows 10 Pro the minimum requirements are 1GHz processor, 2GB RAM and 20GB HD, anything above that is preferred. Click Next when done.
+ 
+Review that the new VM has the specs you want and click Finish otherwise go back and make changes.
+ 
+
+We will now mount the Windows 10 installation media. In the left pane to your left, locate the vm you just created, right-click and select ‘Edit Settings’.
+
+ 
+
+Go to CD/DVD drive 1 and select Datastore ISO File
+ 
+You will be prompted to select the ISO image from one of the Datastores available. For Omaha sever we have a designated datastores for ISO images named ISO Datastore. Click on it > .sdd.sf folder > ISOS folder and select the en_windows_10 ISO and click OK.
+ 
+The path to the file will be displayed. Make sure to click on ‘Connect at Power On’ to put a check on it.
+ 
+
+Go back to the new VM, right click, on power select power on.
+ 
+
+Open a console windows and you will be prompted to the usual Windows installation process.Choose your language, time format and keyboard method. Leave the defaults for English and US keyboard.
+ 
+
+Click “I don’t have a product key’
+
+ 
+
+Select ‘Custom Install’.
+ 
+
+Select the hard drive to install the OS and click next. This process should take a few minutes and your VM may restart several times.
+ 
+
+Once the OS installation has been completed, you want to remove the DVD media device by deleting it from the VM ‘Edit settings’ options. Change it to ‘Client Device’ and click OK.
+ 
+
+7.1.	Assigning a static IP to Windows VMs
+Network: 172.16.0.0/24. 	 DNS:  172.16.0.1 or 8.8.8.8 or 9.9.9.9
+
+Type in ‘ethernet settings’ on Windows search box and double click on Ethernet Settings.
+ 
+
+
+
+
+
+
+
+Click change Adapter Options.
+ 
+
+
+Then, right click on Ethernet 2 network adapter and select Properties from the drop-down menu.
+ 
+
+Double-click the options shown in the red box below.
+ 
+
+Do as shown in the screen shot below. The IP you will enter will be either provided by Wajid or based on the IP Scheme document. Subnet mask and default gateway will be same as in the image. DNS you might use the same or a different one. When done click ok.
+ 
+7.2.	Setting up RDP for remote connectivity
+Depending on the version of Windows, Remote connection is not always enabled which means it has to be manually enabled. 
+
+In the start menu search box type in ‘allow remote’ and select as shown in the image below:
+
+ 
+Figure 15: Allowing Remote
+
+
+In the Remote Desktop Section click ‘Show Settings’
+
+ 
+ 
+
+
+
+Make sure the following are selected:
+ 
+
+You also want to make sure firewall allows echo requests to the VM, so in the start search box type in ‘Firewall’ and select the following:
+ 
+
+Select ‘Inbound Rules’ then scroll down until you find the first two ‘File and Printer…IPV4’ rules. Make sure they are enabled (green dot with check mark) if not, right click on each and select ‘Enable Rule’. Go windows defender firewall with advanced security
+ 
+
+Verify you can ping your VM.
+
+ 
+
+Connect to it using Remote Desktop Connection by entering your VM IP and its username:
+
+ 
+
+You will be prompted to enter the VM password and click OK.
+
+ 
+ 
+8.	Test Window 10 professional Template 
+We test the window 10 professional template dated 04-oct-2019. name “Window 10.111” found successful, this template is created in the VMs and Template in windows option as shown in the below snapshot.
+
+ 
+						Window Template
+
+
+ 
+					Test completion 
+
+9.	Creating a VM with a specialized .OVA
+
+
+9.1.	CCIE SP VM Once you deploy the CCIE SP VM you will be completing this section
+
+
+9.2.	Once you deploy the Red pnda.io you will be completing this section
+https://github.com/pndaproject/red-pnda/blob/develop/installing_on_vbox_guide.md
+
+
+
+
+
+
+10.	Incorrect Windows Templates
+According to NAM, Faraz created the windows template but these are not correct template ;
+Looking for the windows 10 template
+ 
+11.	A- Creating Windows Template
+ 
+
+Template has been created
+
+	 
+
+10-B Creating a windows VM using template
+ 
+
+ 
+ 
+
+ 
+
+Add the network so it will be in the internal network
+ 
+ 
+ 
+
+ 
+ 
+
+
+ 
+12.	A-Creating Ubuntu Template
+
+ 
+
+Ubuntu Template has been created
+
+	 
+
+11-B Deploying Ubuntu VM using a template
+
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+13.	Creating snapshot of VM
+Right-click a virtual machine from the list, select Snapshots, and select Take snapshot from the pop-up menu.
+ 
+
+Enter a name for the snapshot. (Optional) Type a description for the snapshot. (Optional) Select the Snapshot the virtual machine's memory check box to capture the memory of the virtual machine
+
+ 
+Status Complete 
+
+ 
+
+Right-click a virtual machine from the list, select Snapshots, and select Take snapshot manager. and you can edit it, when change require.
+
+ 
+ 
+14.	Creating a VM Clone
+
+
+ 
+
+ 
+
+
+ 
+
+
+
+ 
+
+ 
+
+
+ 
+
+
+ 
+
+Complete 
+ 
+ 
+
+14- How to Enable Desktop Sharing in Ubuntu
+
+ 
+
+Under sharing, check the option “Allow others users to view your desktop” to enable desktop sharing. Optionally, you can also permit other users to remotely control your desktops by checking the option “Allow others users to control your desktop”.
+
+ 
+3. Next in security section, you can choose to manually confirm each remote connection by checking the option “You must confirm each access to this computer”.
+
+Again, another useful security feature is creating a certain shared password using the option “Require user to enter this password”, that remote users must know and enter each time they want to access your desktop.
+
+4. Concerning notifications, you can keep an eye on remote connections by choosing to show the notification area icon each time there is a remote connection to your desktops by selecting “Only when someone is connected”
+ 
+When you have set all the desktop sharing options, click Close. Now you have successfully permitted desktop sharing on your Ubuntu
+14.1 Testing Desktop Sharing in Ubuntu Remotely
+You can test to ensure that it’s working using a remote connection application. In this example, I will show you how some of the options we set above work
+5. I will connect to my Ubuntu PC using VNC (Virtual Network Computing) protocol via remmina remote connection application.
+
+
+ 
+ 
+6. After clicking on Ubuntu PC item, I get the interface below to configure my connection settings.
+
+ 
+7. After performing all the settings, I will click Connect. Then provide the SSH password for the username and click OK.
+ 
+I have got this black screen after clicking OK because, on the remote machine, the connection has not been confirmed yet.
+ 
+ 
+8. Now on the remote machine, I have to accept the remote access request by clicking on “Allow” as shown in the next screenshot.
+
+ 
+9. After accepting the request, I have successfully connected, remotely to my Ubuntu desktop machine.
+ 
+
+14.2 Remmina – A Feature Rich Remote Desktop Sharing Tool for Linux
+It supports several network protocols in a simple, unified, homogeneous and easy-to-use user interface.
+	Supports RDP, VNC, NX, XDMCP and SSH.
+
+14.3 How to Install Remmina Desktop Sharing Tool in Linux
+Run the commands below to install it with all supported plugins:
+
+$ sudo apt-get install remmina remmina-plugin-*
+Once you have installed it, search for remmina in the Ubuntu Dash or Linux Mint Menu, then launch it:
+ 
+
+You can perform any configurations via the graphical interface or by editing the files under $HOME/.remmina or  $HOME/.config/remmina.
+
+To setup a new connection to a remote server press [Ctrl+N] or go to Connection -> New, configure the remote connection profile as shown in the screenshot below. This is the basic settings interface.
+
+ 
+Click on Advanced from the interface above to configure advanced connection settings.
+ 
+ 
+To configure SSH settings, click on the SSH from the profile interface above.
+ 
+
+
+Once you have configured all the necessary settings, save the settings by clicking on Save button and from the main interface, you’ll be able to view all your configured remote connection profiles as shown below.
+ 
+14.4 Connect to Remote Machine Using SSH
+Select the connection profile and edit the settings, then choose SSH – Secure Shell from the Protocols down menu and optionally set a startup program and SSH authentication details. Lastly, click Connect, and enter the user SSH password.
+ 
+ 
+When you see the interface below, it means your connection is successful, you can now control the remote machine using SSH.
+14.5 Connect to Remote Machine Using VNC
+Choose the connection profile from the list and edit the settings, then select VNC – Virtual Network Computingfrom the Protocols down menu. Configure basic, advanced and ssh settings for the connection and click Connect, then enter the user SSH password.
+ 
+Once you see the following interface, it implies that you have successfully connected to the remote machine using VNC protocol.
+Enter the user login password from the desktop login interface as shown in the screenshot below.
+
+ 
+
+ 
+Simply follow the steps above to use the other remaining protocols to access remote machines, it’s that simple.
+Remmina Homepage: https://www.remmina.org/wp/
+That’s all! In this article, we showed you how to install and use Remmina remote connection client with a few supported protocols in Linux. You can share any thoughts in the comments via the feedback form below.
+
+
+
+14.6 VNC Setup
+a.	Go to https://www.realvnc.com/en/connect/download/viewer/ , download and install VNC for you operating system. 
+ 
+b.	Go to file > new connection, put in VNC server ip address of machine and change encryption setting to “prefer off” or Let VNC Server choose. 
+i.	Ip address should be 176.16.0.xx:5900 or 176.16.0.xx:1 
+ 
+c.	Click OK, double click on the VNC server (using 172.16.0:5900 as an example) 
+d.	Enter password 
+e.	Enter log in credentials 
+f.	Once in logged in click date and time on top of screen to show notifications. There should be a notification to show that the machine is being remotely controlled.  
+
+
+ 
+
+
+
+
+14.7 VNC Issues
+g.	Issue 1: Desktop Scaling: doesn’t appear correctly on default 800x600 resolution. 
+Solution: Open terminal and change resolution. 
+1.	Go to terminal and and type in: 
+xrandr -s 1024x768
+
+h.	Issue 2: VNC can’t connect because of encryption issues Solution: Change encryption setting to prefer off.
+ 
+i.	If problem persists, fixes needed to be done via vSphere. See vSphere Section.
+
+
+
+
+i.	Issue 2: VNC times out.  
+Solution: If using 172.16.0.xx:1  address switch to 172.16.0.xx:5900 address or vice versa. If problem persists VNC must be Enabled via vSphere. See vSphere Section.
+j.	Issue 3: VNC connects but has grey screen
+ 	
+Solution: Change permissions of the xstartup file. See vSphere Section.
+
+
+14.8	Fixing VNC issues via vSphere
+k.	 Make sure LogMeIn Hamachi is active. Go to 172.16.0.110 in  your internet browser.   
+l.	Enter credentials
+ 
+m.	Log in to vSphere, click on VM network 
+n.	click on the virtual machines, then the specific VM, the preview image.  
+o.	Log in to VM 
+ 
+p.	Fixing encryption
+i.	According to  https://bugs.launchpad.net/ubuntu/+source/vino/+bug/1281250 VNC cant be accessed non linux machines with encryption. Used section 3 of this guide to disable encryption. 
+ii.	Open terminal and type in: sudo apt install dconf-editor 
+iii.	Open dconf by typing in the search bar of Ubuntu  
+iv.	Disabled encryption via org -> gnome -> desktop -> remote-access  
+ 
+
+q.	Activate sharing
+i.	On Ububtu apps go to settings 
+ii.	Make sure Sharing is on and screen sharing is active.  
+ 
+r.	Install VNC if it is not installed:
+i.	sudo apt install vnc4server xfce4 xfce4-goodies 
+ii.	set password using: sudo vncpasswd
+s.	Enable VNC
+i.	Start vnc: sudo vncserver
+ii.	Open xstartup with “sudo nano  ~/.vnc/xstartup” and make sure it looks like this: 
+1.	Press ctrl + x and press y to save changes.
+iii.	Install apps: sudo apt-get install gnome-panel gnome-settings-daemon metacity nautilus gnome-terminal 
+ 
+
+iv.	Kill the vncserver: sudo vncserver :x
+v.	Change permissions of xstartup file with chmod: cd ~/vnc 
+1.	cd ~/vnc   
+2.	sudo chmod +x xstartup  
+vi.	Start VNC server: sudo vncserver
+ 	 
+	There should be something like this when the server starts
+ 
+
+
+15.	Reference Documents
+How to Enable Desktop Sharing In Ubuntu
+For more information https://www.tecmint.com/enable-desktop-sharing-in-ubuntu-linux-mint/
+
+Red pnda
+https://github.com/pndaproject/red-pnda/blob/develop/installing_on_vbox_guide.md
+
+Deploying OVA
+https://pubs.vmware.com/horizon-workspace-10/index.jsp?topic=%2Fcom.vmware.hs-install.doc_10%2FGUID-47DCE6F4-4620-4D0E-A153-186A3A157F47.html
+
+Deploying OVA
+https://www.youtube.com/watch?v=CnKlcfjsPXo
+
+Deploying OVA
+https://www.youtube.com/watch?v=m7Nb3e_OMR8
+https://www.youtube.com/watch?v=uNbHy394-SA
+
+
+
+
+
